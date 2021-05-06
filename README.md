@@ -12,8 +12,13 @@ npm install @pearnaly/ngx-translate-browser-i18n-loader
   ...
   imports: [
     ...
+    HttpClientModule,
     TranslateModule.forRoot({
-      loader: {provide: TranslateLoader, useClass: TranslateBrowserI18nLoader}
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateBrowserI18nLoader,
+        deps: [HttpClient]
+      }
     })
   ],
   ...

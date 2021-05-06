@@ -1,18 +1,27 @@
 import { TranslateLoader } from '@ngx-translate/core';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { Message, Messages } from './browser-i18n';
 
 type Translate = {
   [key: string]: string
-}
+};
 
-export class TranslateBrowserI18nLoader implements TranslateLoader {
+export default class TranslateBrowserI18nLoader implements TranslateLoader {
+  constructor(
+    protected httpClient: HttpClient,
+  ) {
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getTranslation(lang: string): Observable<Translate> {
     const langDirName = lang.replace(/-/g, '_');
-    return from(
-      import(`_locales/${langDirName}/messages.json`)
-        .then((messages: Messages) => {
+    const url = `/_locales/${langDirName}/messages.json`;
+    return this.httpClient
+      .get(url)
+      .pipe(
+        map((messages: Messages) => {
           const translate: Translate = {};
           Object.keys(messages)
             .forEach((key: string) => {
@@ -20,7 +29,7 @@ export class TranslateBrowserI18nLoader implements TranslateLoader {
             });
           return translate;
         }),
-    );
+      );
   }
 
   private static getTranslationString(message: Message): string {
