@@ -15,6 +15,10 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "removeComments": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/web-ext-types"
+    ],
     "lib": [
       "dom",
       "es2020"

@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   env: {
     browser: true,
+    webextensions: true,
     es2021: true,
   },
   extends: [
@@ -20,6 +21,8 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
-    'import/prefer-default-export': 0
+    'import/prefer-default-export': 0,
+    '@typescript-eslint/ban-ts-comment': "warn",
+    'class-methods-use-this': "warn"
   },
 };
