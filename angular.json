@@ -30,59 +30,18 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "./tsconfig.lib.json",
-              "./tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "my-libr": {
-      "projectType": "library",
-      "root": "projects/my-libr",
-      "sourceRoot": "projects/my-libr/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "tsConfig": "projects/my-libr/tsconfig.lib.json",
-            "project": "projects/my-libr/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/my-libr/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/my-libr/src/test.ts",
-            "tsConfig": "projects/my-libr/tsconfig.spec.json",
-            "karmaConfig": "projects/my-libr/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/my-libr/tsconfig.lib.json",
-              "projects/my-libr/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts"
             ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
   },
   "defaultProject": "@pearnaly/ngx-translate-browser-i18n-loader"
 }
