@@ -1,6 +1,6 @@
 {
   "name": "@pearnaly/ngx-translate-browser-i18n-loader",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Loads _locale/<lang>/messages.json translation files as defined by the browser.i18n (or chrome.i18n) api for browser extensions made with Angular and translated with ngx-translate",
   "repository": "https://github.com/pearnaly/ngx-translate-browser-i18n-loader.git",
   "homepage": "https://github.com/pearnaly/ngx-translate-browser-i18n-loader",

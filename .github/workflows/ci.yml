@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Publish to NPM (optional)
-        run: npm publish --access=public
+        run: npm publish dist --access=public
         continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
