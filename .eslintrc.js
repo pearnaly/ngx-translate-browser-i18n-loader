@@ -22,7 +22,7 @@ module.exports = {
   ],
   rules: {
     'import/prefer-default-export': 0,
-    '@typescript-eslint/ban-ts-comment': "warn",
+    // '@typescript-eslint/ban-ts-comment': "warn",
     'class-methods-use-this': "warn"
   },
 };

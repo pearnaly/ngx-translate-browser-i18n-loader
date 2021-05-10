@@ -2,32 +2,31 @@
   "compileOnSave": false,
   "buildOnSave":  false,
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./",
     "outDir": "dist",
-    "sourceMap": false,
+    "sourceMap": true,
     "declaration": true,
+    "target": "ES2020",
     "module": "ES2020",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "ES2020",
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "removeComments": true,
+    "paths": {
+      "@pearnaly/ngx-translate-browser-i18n-loader": [
+        "dist"
+      ]
+    },
     "typeRoots": [
       "node_modules/@types",
       "node_modules/web-ext-types"
     ],
     "lib": [
-      "dom",
-      "es2020"
+      "DOM",
+      "ES2020"
     ]
-  },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/*.test.ts"
-  ]
+  }
 }

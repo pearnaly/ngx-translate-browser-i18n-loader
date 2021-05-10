@@ -1,6 +1,6 @@
 {
   "name": "@pearnaly/ngx-translate-browser-i18n-loader",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Loads _locale/<lang>/messages.json translation files as defined by the browser.i18n (or chrome.i18n) api for browser extensions made with Angular and translated with ngx-translate",
   "repository": "https://github.com/pearnaly/ngx-translate-browser-i18n-loader.git",
   "homepage": "https://github.com/pearnaly/ngx-translate-browser-i18n-loader",
@@ -14,37 +14,45 @@
   "keywords": [
     "ngx-translate",
     "loader",
+    "angular",
     "browser extension",
     "browser.i18n",
     "chrome.i18n"
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && ng build",
     "watch": "npm run clean && tsc --watch --sourceMap",
     "lint": "eslint src",
     "publish": "npm publish --access=public"
   },
   "peerDependencies": {
-    "@angular/core": ">=5",
-    "@angular/common": ">=5",
-    "@ngx-translate/core": ">=6",
-    "rxjs": ">=6"
+    "@angular/core": ">=10.0.0",
+    "@angular/common": ">=10.0.0",
+    "@ngx-translate/core": ">=11.0.0",
+    "rxjs": ">=6.5.5"
   },
   "dependencies": {},
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.1102.12",
+    "@angular-devkit/build-ng-packagr": "^0.1002.0",
+    "@angular/cli": "^11.2.12",
+    "@angular/compiler": "^11.2.13",
     "@angular/common": "^11.2.13",
+    "@angular/compiler-cli": "^11.2.13",
     "@angular/core": "^11.2.13",
     "@ngx-translate/core": "^13.0.0",
+    "@schematics/angular": "^11.2.12",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.22.1",
+    "ng-packagr": "^11.0.0",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.0.0",
-    "typescript": "^4.2.4",
+    "rxjs": "^6.5.5",
+    "typescript": "~4.1.5",
     "web-ext-types": "^3.2.1",
     "zone.js": "^0.11.4"
   }
