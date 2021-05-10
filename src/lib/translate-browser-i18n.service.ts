@@ -1,44 +1,27 @@
 import {
-  DEFAULT_LANGUAGE, DefaultLangChangeEvent, LangChangeEvent,
+  DEFAULT_LANGUAGE,
   MissingTranslationHandler,
   TranslateCompiler,
   TranslateLoader,
   TranslateParser,
   TranslateService,
-  TranslateStore, TranslationChangeEvent,
+  TranslateStore,
   USE_DEFAULT_LANG,
   USE_EXTEND,
   USE_STORE,
 } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import {
-  EventEmitter, Inject, Injectable, InjectionToken,
-} from '@angular/core';
+import { combineLatest, Observable, of } from 'rxjs';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
 
-/* function isDefined(value: unknown): boolean {
+function isDefined(value: unknown): boolean {
   return typeof value !== 'undefined' && value !== null;
-} */
+}
 
 export const AVAILABLE_LANGUAGES = new InjectionToken<string[]>('AVAILABLE_LANGUAGES');
 
-type Translation = { [key: string]: string };
-type InterpolateParams = string | string[] | { [key: string]: string };
-
 @Injectable()
-export class TranslateBrowserI18nService {
-  private readonly translateService: TranslateService;
-
+export class TranslateBrowserI18nService extends TranslateService {
   private readonly nativeLang: string;
-
-  /* store: TranslateStore;
-
-  currentLoader: TranslateLoader;
-
-  compiler: TranslateCompiler;
-
-  parser: TranslateParser;
-
-  missingTranslationHandler: MissingTranslationHandler; */
 
   constructor(
     store: TranslateStore,
@@ -52,8 +35,7 @@ export class TranslateBrowserI18nService {
     @Inject(DEFAULT_LANGUAGE) defaultLanguage: string,
     @Inject(AVAILABLE_LANGUAGES) private availableLanguages: string,
   ) {
-    const applyDefaultLanguage = defaultLanguage || this.getExtensionDefaultLang();
-    this.translateService = new TranslateService(
+    super(
       store,
       currentLoader,
       compiler,
@@ -62,131 +44,106 @@ export class TranslateBrowserI18nService {
       useDefaultLang,
       isolate,
       extend,
-      applyDefaultLanguage,
+      null,
     );
-
+    const applyDefaultLanguage = defaultLanguage || this.getExtensionDefaultLang();
     this.nativeLang = this.getExtensionLang();
-    console.debug('nativeLang:', this.nativeLang);
-    // this.currentLang = this.nativeLang;
-    // this.setDefaultLang(applyDefaultLanguage);
-  }
-
-  get onTranslationChange(): EventEmitter<TranslationChangeEvent> {
-    return this.translateService.onTranslationChange;
-  }
-
-  get onLangChange(): EventEmitter<LangChangeEvent> {
-    return this.translateService.onLangChange;
-  }
-
-  get onDefaultLangChange(): EventEmitter<DefaultLangChangeEvent> {
-    return this.translateService.onDefaultLangChange;
-  }
-
-  set defaultLang(defaultLang: string) {
-    this.translateService.defaultLang = defaultLang;
-  }
-
-  set currentLang(currentLang: string) {
-    this.translateService.currentLang = currentLang;
-  }
-
-  set langs(langs: string[]) {
-    this.translateService.langs = langs;
-  }
-
-  set translations(translations: Translation[]) {
-    this.translateService.translations = translations;
-  }
-
-  setDefaultLang(lang: string): void {
-    this.translateService.setDefaultLang(lang);
-  }
-
-  getDefaultLang(): string {
-    return this.translateService.getDefaultLang();
-  }
-
-  use(lang: string): Observable<Translation> {
-    return <Observable<Translation>> this.translateService.use(lang);
-  }
-
-  getTranslation(lang: string): Observable<Translation> {
-    return <Observable<Translation>> this.translateService.getTranslation(lang);
-  }
-
-  setTranslation(lang: string, translations: Translation, shouldMerge?: boolean): void {
-    this.translateService.setTranslation(lang, translations, shouldMerge);
-  }
-
-  getLangs(): string[] {
-    return this.translateService.getLangs();
-  }
-
-  addLangs(langs: string[]): void {
-    this.translateService.addLangs(langs);
-  }
-
-  getParsedResult(
-    translations: Translation,
-    key: string | string[],
-    interpolateParams?: InterpolateParams,
-  ): string | { [key: string]: string } {
-    return <string | { [key: string]: string }> this.translateService
-      .getParsedResult(translations, key, interpolateParams);
+    this.currentLang = this.nativeLang;
+    this.setDefaultLang(applyDefaultLanguage);
   }
 
   get(
     key: string | Array<string>,
-    interpolateParams?: InterpolateParams,
+    interpolateParams?: string | string[] | { [key: string]: string },
   ): Observable<string | { [key: string]: string }> {
-    return <Observable<string | { [key: string]: string }>> this.translateService
-      .get(key, interpolateParams);
-  }
-
-  getStreamOnTranslationChange(
-    key: string | Array<string>,
-    interpolateParams?: InterpolateParams,
-  ): Observable<string | { [key: string]: string }> {
-    return <Observable<string | { [key: string]: string }>> this.translateService
-      .getStreamOnTranslationChange(key, interpolateParams);
-  }
-
-  stream(
-    key: string | Array<string>,
-    interpolateParams?: InterpolateParams,
-  ): Observable<string | { [key: string]: string }> {
-    return <Observable<string | { [key: string]: string }>> this.translateService
-      .stream(key, interpolateParams);
+    if (!isDefined(key) || !key.length) {
+      throw new Error('Parameter "key" required');
+    }
+    if (this.currentLang === this.nativeLang) {
+      return of(this.getNativeMessages(key, interpolateParams));
+    }
+    return <Observable<string | { [key: string]: string }>> super.get(key, interpolateParams);
   }
 
   instant(
     key: string | Array<string>,
-    interpolateParams?: InterpolateParams,
+    interpolateParams?: string | string[] | { [key: string]: string },
   ): string | { [key: string]: string } {
-    return <string | { [key: string]: string }> this.translateService
-      .instant(key, interpolateParams);
+    if (!isDefined(key) || !key.length) {
+      throw new Error('Parameter "key" required');
+    }
+    if (this.currentLang === this.nativeLang) {
+      return this.getNativeMessages(key, interpolateParams);
+    }
+    return <string | { [key: string]: string }> super.instant(key, interpolateParams);
   }
 
-  set(key: string, value: string, lang?: string): void {
-    this.translateService.set(key, value, lang);
+  private getNativeMessages(
+    key: string | string[],
+    interpolateParams: string | string[] | { [key: string]: string },
+  ): string | { [key: string]: string } {
+    let nativeInterpolateParams: string | string[];
+    if (!isDefined(interpolateParams)) {
+      nativeInterpolateParams = null;
+    } else if (typeof interpolateParams === 'string' || interpolateParams instanceof Array) {
+      nativeInterpolateParams = interpolateParams;
+    } else {
+      nativeInterpolateParams = Object.keys(interpolateParams)
+        .map((interpoKey) => interpolateParams[interpoKey]);
+    }
+    if (key instanceof Array) {
+      const result: { [key: string]: string } = {};
+      key.forEach((k) => {
+        result[k] = this.getNativeMessage(k, nativeInterpolateParams);
+      });
+      return result;
+    }
+    return this.getNativeMessage(key, nativeInterpolateParams);
   }
 
-  reloadLang(lang: string): Observable<Translation> {
-    return <Observable<Translation>> this.translateService.reloadLang(lang);
+  private getNativeMessage(key: string, interpolateParams: string | string[]): string {
+    return browser.i18n.getMessage(key, interpolateParams);
   }
 
-  resetLang(lang: string): void {
-    this.translateService.resetLang(lang);
+  setDefaultLang(lang: string): void {
+    if (lang === this.getExtensionDefaultLang() && this.currentLang === this.nativeLang) {
+      if (this.defaultLang !== lang) {
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this.changeDefaultLang(lang);
+      }
+      return;
+    }
+    if (this.defaultLang === this.getExtensionDefaultLang()) {
+      this.defaultLang = null; // to trigger change
+    }
+    super.setDefaultLang(lang);
+  }
+
+  use(lang: string): Observable<unknown> {
+    if (this.getClosestAvailableOverLang(lang) === this.nativeLang) {
+      if (this.nativeLang !== this.currentLang) {
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this.changeLang(this.nativeLang);
+      }
+      return of(null);
+    }
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const retrieveDefault = <Observable<unknown>> this.retrieveTranslations(this.defaultLang);
+    const useObs = super.use(lang);
+    if (retrieveDefault) {
+      return combineLatest([useObs, retrieveDefault]);
+    }
+    return useObs;
   }
 
   getBrowserLang(): string {
-    // return this.translateService.getBrowserLang();
     return this.getBrowserCultureLang().replace(/-.*/, '');
   }
 
   getBrowserCultureLang(): string {
-    // return this.translateService.getBrowserCultureLang();
     return browser.i18n.getUILanguage();
   }
 

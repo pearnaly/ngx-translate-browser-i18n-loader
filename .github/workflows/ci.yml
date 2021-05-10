@@ -26,10 +26,10 @@ jobs:
         run: npm install
       #      - name: Test
       #        run: npm run test
-      - name: Build
-        run: npm run build
       - name: Lint
         run: npm run lint
+      - name: Build
+        run: npm run build
       - name: Publish to NPM (optional)
         run: npm publish --access=public
         continue-on-error: true
